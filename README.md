@@ -1,5 +1,5 @@
 # Ghostnet
-Reticulum Based Messenger inspired by S2Underground
+Reticulum Based Messenger inspired by S2Underground's work
 
 This software serves a UI that manages:
 RNS direct messaging
