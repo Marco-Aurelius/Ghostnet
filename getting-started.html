@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meridian GhostNet — Getting Started</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-page:      #070d14;
+    --bg-panel:     #0d1b2a;
+    --bg-panel-alt: #0a1520;
+    --bg-row-hover: #112236;
+    --border:       #1e3a56;
+    --border-mid:   #2e5a7a;
+    --text-primary: #ffffff;
+    --text-mid:     #8ab8d4;
+    --text-dim:     #4d7da0;
+    --text-dimmer:  #2e5a7a;
+    --accent:       #00d4ff;
+    --accent-glow:  rgba(0,212,255,0.4);
+    --accent-dim:   rgba(0,212,255,0.08);
+    --accent-bg:    #003a4d;
+    --accent2:      #ff8c00;
+    --status-green: #00c853;
+    --status-amber: #ff8c00;
+    --status-red:   #ff3b3b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .page-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 32px 120px;
+  }
+
+  /* ── Header ── */
+  .doc-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ghost-icon {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px var(--accent-glow));
+  }
+
+  .header-text h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--text-primary);
+  }
+
+  .header-text .subtitle {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+
+  .header-badge {
+    margin-left: auto;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  /* ── Section headings ── */
+  .section {
+    margin-bottom: 52px;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-mid);
+    margin: 20px 0 8px;
+    letter-spacing: 0.02em;
+  }
+
+  p {
+    color: var(--text-mid);
+    margin-bottom: 14px;
+    font-size: 0.88rem;
+  }
+
+  p strong, li strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Lists ── */
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 14px;
+  }
+
+  li {
+    color: var(--text-mid);
+    font-size: 0.88rem;
+    margin-bottom: 6px;
+  }
+
+  li::marker {
+    color: var(--accent);
+  }
+
+  /* ── Code / Terminal blocks ── */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: var(--bg-panel);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+  }
+
+  pre {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin: 16px 0;
+    overflow-x: auto;
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text-mid);
+    font-size: 0.8rem;
+    line-height: 1.7;
+  }
+
+  pre code .cmd { color: var(--accent); }
+  pre code .cmt { color: var(--text-dim); }
+
+  /* ── Info / Note panels ── */
+  .note {
+    background: var(--accent-dim);
+    border: 1px solid var(--border-mid);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin: 16px 0;
+    font-size: 0.82rem;
+    color: var(--text-mid);
+  }
+
+  .note .note-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .warn {
+    background: rgba(255,140,0,0.07);
+    border-color: rgba(255,140,0,0.4);
+    border-left-color: var(--accent2);
+  }
+
+  .warn .note-label { color: var(--accent2); }
+
+  /* ── Interface type cards ── */
+  .iface-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 16px 0 20px;
+  }
+
+  .iface-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 14px 16px;
+    transition: border-color 0.15s;
+  }
+
+  .iface-card:hover { border-color: var(--border-mid); }
+
+  .iface-card .iface-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+
+  .iface-card p {
+    font-size: 0.78rem;
+    margin: 0;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  /* ── Network topology diagrams (SVG) ── */
+  .diagram-wrap {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 28px 20px;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+
+  .diagram-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  svg text { font-family: 'JetBrains Mono', monospace; }
+
+  /* ── Step list ── */
+  .steps { list-style: none; padding: 0; counter-reset: steps; }
+
+  .steps li {
+    counter-increment: steps;
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+
+  .steps li::before {
+    content: counter(steps);
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    background: var(--accent-bg);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+
+  .steps li .step-body {
+    flex: 1;
+    font-size: 0.88rem;
+    color: var(--text-mid);
+  }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* ── Table of contents ── */
+  .toc {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 20px 24px;
+    margin-bottom: 48px;
+  }
+
+  .toc .toc-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .toc ol {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  .toc li {
+    font-size: 0.82rem;
+    margin-bottom: 5px;
+  }
+
+  .toc a {
+    color: var(--text-mid);
+    transition: color 0.1s;
+  }
+
+  .toc a:hover { color: var(--accent); text-decoration: none; }
+
+  /* ── Footer ── */
+  .doc-footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    color: var(--text-dimmer);
+    letter-spacing: 0.08em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- Header -->
+  <header class="doc-header">
+    <img class="ghost-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAABUCAYAAAAcaxDBAAAOHUlEQVR42u1beWwc13n/3ptZmaQOSE4kxLItK1bqqK4RQ7FUK4oBg3XqNEGa2gHoHAWqwkkVNKnjyImaw0FJuS1glOiBSDmKKFJAQKlDOqHgyLZiVaFiyRIk8yq5FK8luUsud8k9Z2d3Zud8X//Qe/J4vUub5JKmpfmAAcnZGe6b3/uO3/d7bwB8880333zzzTfffLtBjTQ2NlJEpIhIAYD4kCzAEJEgolzhM8lHaH5gegEjFy9e3BqPx++5fPnynV7AfaTemVdSAIBTp07dPjs7+8+FQqHfMAzDcRw0DMPUdf3/otHo1z3X+8BWAJOK36enp/9B1/U0zmHZbPZ4Q0OD5OfVMtba2ioBADQ3N6/OZrP/I0BzXdd2rxpzXRf5TxcRTUTEeDz+j35OrZAvX3rppY35fP6CB0jGGMNyBwfV1TQt3tLSspoQ4udUAICOjg6Z/7xN07Q+DqbFvdFxXdepBCoiMsYY9vX17fR6+Y3smTIAQE9Pz9ZCoTDi8UxERObNlx7P9ALqICIbHh7+xFKGvfxeqOQAIBNC7L6+vo9s27btt3V1dVtc13UppTIhBACA5PP50wBg1dXVfZqfY5RSyhhDAKCEEMoYI6ZpZgEA2trabjxKJEIcAGB8fPyzxWIxyz3TcV2XIaJrGIYxOjraIK5TFOV8qcc6jsMQkem6PtPa2rrmRuGlomWUvB1Pc3Pz6kQi8W88tNFxHJeHs4OIGA6Hv80BuqmhoUHSNG0QETGdTh+emJjYnc1mfyEATiQSP7ruqrwg4wI4frzlAQ8fPrwmFovt1XX9yhus6Gol596Juq7rBw4cWCvuSSaTBxERM5nMT8S5UCh0D/dk7eLFi1u9zcB7loB3dHQI4OYKM9rZ2bllYmLikVQqdVjTtAkPv3TKUCFmWZYVCoW+0N3dfW8ymTyKiGiaZv7y5cu3I+IqAIDZ2dkDiIiTk5OPv2e9U+S/cgAeP358Q19f30cmJycfSSQS+9Pp9A+z2eyLmqYNGoahlzQ4DnfLSlQIERFt275W4A3DmAEACQBgYGBgh+M4mE6nf+ilXXNEzqLzarUTM0FESghxxYmurq4P3XLLLR+vqanZEwgEdsiy/EFZlt8vyxWfzfVW5rf9QkIQAAhjzAUASikl2Wz2OcuyIhs2bPiOqqrHNm7c+Dj3TMavf0ujIMbMQSWEEPauhzanK3Ds2LH1sVhsXy6X+4NpmkaZ1pq5rmu6rlvkhylaxkreOJ/D07//WIBW6n08j187t3fv3pojR46sXRHqlCcvSdPT098sFosRL3qc5ti8q7HLiRfVAJLnVptX9LnAvBYek5OTj+Ryud8Ui8VwsViM53K5s2NjYw+UCjDLDmZvb+9dqqq+5sHIFnyRH474wDCMlK7rZ1RVPaooyn+rauH0G7guCkwHEVFRlOfLgen1yqGhoV25XO5suck1DEPr6+u7c9kZgfiyUCi0U9f1pGgHHcdhJcIEIiJqmtYdi8X2vvrqqxu9/2d8fPyvxCQsFEzHcVxEZPl8frilpWU1ItLGxkZaRs2XZmZmGg3DsD2Fz/GoVAZXpppKvXlZcmZfX9+dhmEkOOm2y3mMaZrFRCLxlLfV5d5z07Fjx2oKhULQS9oXmDddxhgODAw8BAAQDAZXlTYJAwMDOzxRZLuua1ZIGaxQKDy3nDSLICJtaGiQFEW5KDyzHJiFQiE8NDS0q5ROiQeNxWJPV+Ka8w31TCbzYrnBvvzyy7ek0+l/NQxDFEirUv5GRBsR0bKstmUDVPC5cDj8lbnAzOfzw2fOnLmDDyxQKhD39/ffa5qmxcOOVQHQtrGxsV09PT1/EgqFds7MzHxRUZSfFYvFlMBOgKiq6q+mpqb2maap82dgXkCz2ewvlw1QRCT79u0LqKo6gojMG6oiZ+q6PvXaa6/dUZqHuHdK/P6e+XrnXIzAU1RYaaFxHMfk45odHR39LADA7379u02madmcxrESltC8LDlUzNjQ0NBDghV520FEdAzDKHZ1de0sNyBxfzwef6acdy/mEKqSh+uKgmPx9DPc3d39R2Is8Xj8P0vHIACNxWJfWy5AZQCATCbzH3zQdmn+CYfDXwYA6OzsDJQrZENDQ9urEepzpAAmxGUBkKIowydPnrzDwz+/4hFdHG9xQ0SMRCKfWJaQFzwun89f9IaryGPpdLq90syKwWWz2VOLLUTzIfm5XG6wvb39dgCACxcu3JzJZJ43DAM1TYuLOiUmgRckR3jyfHkonS+YhBBsbW1dI0nSnR6yjJRSYhhGPhgMfoODzkrBJIS4oVDoofXr138SAFxCyJLNPiHEppTKhUKht7e3988effTRqUgkct/27dtfpZSmx8bG7jpy5MiHR0ZGduq63k0pJQDgAAA4jpN9/fXXE2LoS07kOfe0PTPrICJGo9EfzOGdFAAgl8v9YSm9k49HeObvT506dTMAwAsvvFA3ODj4/XA4/PHSsZ07d26LYRiqCPdCoTAyX2dbkAm6Mzw8/KeexC+qevzEiRNrS0UH731XrlzZ7TjOmwpZlcF0RVFKp9O/2LdvX0BMpuiaRLTwv4nQTVOp1E88Hd0A9/Ll6dvD4fBDnrbN5q3aM2+XO5PJ5M+rXdlLuahlWU4sFntKpKgSIN/Sm4t+f2xs7M8FoLquzx4+fHjp154EMJFI5C9F+4aIzDRN+9KlS3eJDqpcETtx4sRawzBmxaLZUhQfTdMiIyMjD1ZSmeYqsqdPn35fsVhUBKgDAwNLX+VFh9Tf3/8F/r0m7zq6OJik0iRMTU19yrMwVHUwFUU529HR8YGFcEdPfv89IjqmaZqqqnZ7PiNLUuWF1dbWWgAAXFkHy7Iu8WooVVoVqKure5hfw6oYMQ6lVM7lcm179ux5uL6+foazCWchKxe6rv9U13UIBoN3UUprZ2Zm/okQwjo6OqQlDflUKvWw6PJ4V/HUHPlT8Nbz1azunv79NyI6FqNdinuj0ejPwuHwX3d2dr4/FosdrbQ2VlUPTaVSbskpfS7e2tLSslqSpG3VWsdCREYplVRV7dq/f/+XEBEWuw5ECGGEELjtttv+LpPJ9OzcuTO1efPmx8+ePfuWdailpE0WImIqlfpehb6dAgAMDg5uNQzD8qo6i+GZiOgWi8X8hQsXPuQdVzU7wYVW93kl74aGBgQAMAwjZ1kWW7VqFQUAkGV5+9sM8uZVq1YFquShDACkZDL5zJ49e0KIKC8gZ865itrY2EgX6u3zCvmmpibgwkgOEXVRhGRZ/tiDDz4oU0odL2BtbW2iINUQQoAxhoshyyLUNU2LnDlz5hCPALfakXjw4MHlWUIWYdDY2Fij6/rUG1Kjw0Kh0H2ISLzhJ36fmJj4WJXCXWiVTy/res8yqU2XOEgGIrJkMvnvZcRkKtZyhADs3bM5TzAREZllWU5XV9cfl2siVoItZEASB2vE8z/IunVrv9re3r6eEOKUWQdP27ZtLVK9YQBALMsae/bZZ0cIIbhk1XeZAQUAANM0gwJg27ZTtu1M7969+1te0AV4V65cSSJiajGAUkoZAIDrusG2tjaXMSYtqbS2jIAi7yp6+INSVVVPNDc335fP59dzld4VFRMRyWOPPVZ0XXd8MYAyxoS3j1eLz64UQBlfU+o1TVPhguzAwYMHC4cOHfr2+Ph4KRGWONXq5WAuyqscx8nC9WaiGKiq+r+IyOLx+DfE7uNK7Wo0Gv3MYsQRUeFnZ2e/t5IrPF3MfaqqtgMACQQC93DuRip59Ojo6FnDMBKUUoqIC+Z5siyvXsnOtiBAm5qaGABAV1fX86ZpFtesWfMXTzzxxE0AwEorPM+jUn19faFYLP7aC/JCTJKkzXA9mgjl6enp7/D1pL+tJMiKFBEMBu+2r243dufLRz27Uc4vuZL+LhkR4Kmq+nNd1+2hoaFdlWQ0j/T3y4Usg4gXFYrFYrq9vX39SgV1MZ0GEkJcRCTr1q37ci6X+5wsy7fPQbYREUk0Gn3asqwipZQg193eoWhBAIDV1NTcvGPHjvt4vqbXa/iT+aSJaDR6YIFeavMVzUPXTS8/F1jvoLcWaYIoitJxTVmZ3zIx6roebW1trfXfKoY3tmWfP39+s6ZpM/PdaMtfgsXJyclHAOZ+VeZGAlXs4HuA70Bx3+nSsnN1pwTLZDInK7GKGxVUmWulXxKeV0kvLdmzL6q9ce7cuS1cn6U+oh5Qo9Ho1z373lmljbSl2yYjkchXr/vitFBQp6env+sB9Zo3MsZQ1/WoZVmOAFW8WJDJZH7lh/0coCYSiR946ZTojkZHRz+fz+dPel4icxER87n8FaiwY+W9SOyr13JdVfnlTZs2/UsqlfovSqmMiI4Yn+M4vYZhvAgAQClFxhiMj49/zWEOdHR0vE/orj6gbzYXEeWNGzfuVxTlJKVUppQS0zT1V155Jazr+pjQR1zXtVpaWo4XCoWhTZs2bbheWs9qeyk2NTUxRCTBYPBvNE2bAgB0HMd88sknXUmS8p7mwLz//vshkUg05fP5WXG/nzzLmCDqY2Njn2EM0bIsq6ura3MkEtl29e1DdPP5fLS5uXlF6qIrjr/V19c7iChv27btpKJkTwQCgcDWrVsfOHr06IRlWWkAoJIk1dbW1pJyu6V9K2Otra0SIpL+/v57bdu2U6nUb7lMeErTtM5cLpccHx+/X1y7ksa+YmeXv9PEYrHYUUVRXrn77rufm5ycfNS27Q8GAgFFkqRdt956699Xe2/TYm1FdxiEEIjH4z82TTMOALBly5b2zs7Oj1qWNbh27VoBouvHtG/vaui/KS15XofxBRHffPPNN998880333zj9v/UgV+4EiQIUgAAAABJRU5ErkJggg==" alt="GhostNet">
+    <div class="header-text">
+      <h1>GHOST NET</h1>
+      <div class="subtitle">Meridian GhostNet · Getting Started Guide</div>
+      <div class="subtitle" style="margin-top:3px; font-style:italic;">Inspired by the phenomenal work of S2Underground</div>
+    </div>
+    <div class="header-badge">v1.3.3</div>
+  </header>
+
+  <!-- ToC -->
+  <nav class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#intro">Introduction</a></li>
+      <li><a href="#install">Installation</a></li>
+      <li><a href="#station-config">Basic Station Configuration</a></li>
+      <li><a href="#interfaces">Interfaces</a></li>
+      <li><a href="#contacts">Contacts &amp; Phone Book</a></li>
+      <li><a href="#p2p">Basic Point-to-Point Network</a></li>
+      <li><a href="#mesh">Robust Mesh Network Topology</a></li>
+      <li><a href="#groups">Group Chat</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. Introduction -->
+  <section class="section" id="intro">
+    <div class="section-label">01 — Overview</div>
+    <h2>Introduction</h2>
+    <p>
+      GhostNet is a Linux-based free and open source encrypted communications platform
+      built on the <strong>Reticulum Network Stack (RNS)</strong> and
+      <strong>LXMF</strong> messaging protocol. It provides encrypted, infrastructure-free,
+      decentralized peer-to-peer messaging across mesh, radio, and TCP networks.
+    </p>
+    <p>
+      GhostNet is intended to give operators a straightforward means of communication
+      across a local or wide-area mesh — whether over LAN, the internet, LoRa radio,
+      or HF/VHF/UHF soundcard modems. No central server, no subscription, no registration.
+    </p>
+    <div class="note warn">
+      <span class="note-label">⚠ Intended Use</span>
+      This software is intended to allow the "average joe" a means of communication for recreation, experimentation or in times of emergency.
+      Because reticulum is encrypted by default, mind your local laws when deploying across radio networks. This may be illegal depending on your area in the world.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 2. Installation -->
+  <section class="section" id="install">
+    <div class="section-label">02 — Setup</div>
+    <h2>Installation</h2>
+
+    <h3>Online Install (recommended)</h3>
+    <p>
+      Use this method if the target machine has an internet connection. Open a terminal
+      and navigate to the folder where you downloaded the <code>.deb</code> file,
+      then run:
+    </p>
+    <pre><code><span class="cmt"># Navigate to the folder containing the .deb file</span>
+<span class="cmd">cd ~/Downloads</span>
+
+<span class="cmt"># Install with apt (replace the filename if your version differs)</span>
+<span class="cmd">sudo apt install ./meridian-ghostnet_1.3.3_amd64.deb</span></code></pre>
+    <p>
+      <code>apt</code> will automatically download and install any missing system dependencies,
+      then set up and start the GhostNet service. You only need to run this once.
+    </p>
+
+    <h3>Offline / Airgap Install</h3>
+    <p>
+      Use this method if the target machine has <strong>no internet access</strong>. The
+      <code>.tar.gz</code> bundle includes all required system packages and a universal
+      installer — no internet connection is needed on the target machine.
+    </p>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <strong>Transfer the file</strong> to the target machine — copy it to a USB drive,
+          or use <code>scp</code> if you have SSH access. The file to transfer is:<br>
+          <code>meridian-ghostnet_1.3.3_amd64.tar.gz</code>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Open a terminal</strong> on the target machine and navigate to where
+          you copied the file. If you copied it to a USB drive mounted at
+          <code>/media/yourname/USB</code>, for example:<br>
+          <code>cd /media/yourname/USB</code><br>
+          Or if you copied it to your home folder:<br>
+          <code>cd ~/</code>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Extract the archive:</strong><br>
+          <code>tar -xzf meridian-ghostnet_1.3.3_amd64.tar.gz</code><br>
+          This creates a new folder called <code>meridian-ghostnet_1.3.3_tarball</code>.
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Navigate into the new folder:</strong><br>
+          <code>cd meridian-ghostnet_1.3.3_tarball</code>
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Run the installer:</strong><br>
+          <code>sudo bash install.sh</code><br>
+          The installer will set up all dependencies from the bundled packages,
+          then start the GhostNet service automatically.
+        </div>
+      </li>
+    </ol>
+
+    <div class="note">
+      <span class="note-label">ℹ After Installation</span>
+      Open a web browser on the same machine and go to
+      <strong><code>http://localhost:8090</code></strong>. From any other computer
+      on the same network, use your station's IP address:
+      <strong><code>http://&lt;your-ip&gt;:8090</code></strong>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 3. Station Config -->
+  <section class="section" id="station-config">
+    <div class="section-label">03 — First Launch</div>
+    <h2>Basic Station Configuration</h2>
+    <p>
+      Upon deployment, the operator is presented with the main interface consisting of
+      two primary panels: <strong>Station Configuration</strong> and <strong>Contacts</strong>.
+    </p>
+    <p>
+      Station Configuration is where you set your RNS identity, display name, and
+      configure which network interfaces this node will use. By default, a
+      <strong>LAN (AutoInterface)</strong> is active — all GhostNet nodes on the same
+      subnet and network group automatically discover each other and form a local mesh.
+    </p>
+    <div class="note">
+      <span class="note-label">ℹ Full Router Mode</span>
+      When multiple interfaces are configured (e.g. LAN + LoRa radio), the node
+      operates as a <strong>full router</strong> — all interfaces are bridged into a
+      single mesh and traffic is forwarded between them automatically.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 4. Interfaces -->
+  <section class="section" id="interfaces">
+    <div class="section-label">04 — Networking</div>
+    <h2>Interfaces</h2>
+    <p>
+      GhostNet supports several interface types that can be added from the
+      <strong>Node → Interfaces</strong> panel. Each interface connects to a different
+      transport layer and all active interfaces are bridged into one unified mesh.
+    </p>
+
+    <div class="iface-grid">
+      <div class="iface-card">
+        <div class="iface-name">LAN / AutoInterface</div>
+        <p>Zero-config local mesh. All nodes on the same subnet and network group discover each other automatically. No settings required.</p>
+      </div>
+      <div class="iface-card">
+        <div class="iface-name">TCP Client</div>
+        <p>Connect to a known RNS hub by IP address or FQDN and port. Use to bridge to a remote network or a public Reticulum gateway.</p>
+      </div>
+      <div class="iface-card">
+        <div class="iface-name">TCP Server</div>
+        <p>Accept inbound Reticulum connections. Makes this node a hub that other TCP clients can connect to.</p>
+      </div>
+      <div class="iface-card">
+        <div class="iface-name">KISS Radio Modem</div>
+        <p>Soundcard-based packet radio using Dire Wolf as the software TNC. Works on VHF, UHF, or HF. The following PTT methods were confirmed working during lab testing:</p>
+        <ul style="margin-top:8px; padding-left:1.2em;">
+          <li><strong>DigiRig Lite</strong> — PTT: <code>VOX</code></li>
+          <li><strong>DigiRig Mobile</strong> — PTT: <code>RTS</code></li>
+          <li><strong>Yaesu SCU-17</strong> — PTT: <code>DTR</code></li>
+        </ul>
+      </div>
+      <div class="iface-card">
+        <div class="iface-name">RNode (LoRa)</div>
+        <p>LoRa radio module running RNode firmware (LilyGO, Heltec, RAK, etc.). Long range, low power, no license required in most regions.</p>
+      </div>
+      <div class="iface-card">
+        <div class="iface-name">RNS Propagation Node</div>
+        <p>Turns this station into a store-and-forward relay. Stores messages for offline nodes and delivers them when they reconnect. Requires a stable, always-on machine.</p>
+      </div>
+    </div>
+
+    <div class="note warn">
+      <span class="note-label">⚠ RF Interfaces</span>
+      All RF interfaces (KISS Modem, RNode) automatically apply <strong>announce_cap = 10%</strong>
+      to limit airtime spent on routing announcements. This prevents flooding slow links.
+      The bitrate is set automatically based on the band you select in the wizard.
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 5. Contacts -->
+  <section class="section" id="contacts">
+    <div class="section-label">05 — Discovery</div>
+    <h2>Contacts &amp; Phone Book</h2>
+    <p>
+      The <strong>Contacts</strong> panel has two tabs:
+    </p>
+    <ul>
+      <li><strong>Network</strong> — nodes discovered live on the mesh. Any station that has announced within range appears here automatically.</li>
+      <li><strong>Phone Book</strong> — your saved contacts. You can store a display name and notes against any destination hash.</li>
+    </ul>
+    <p>
+      Contacts are identified by their <strong>destination hash</strong> — a cryptographic
+      address derived from their RNS identity. You cannot impersonate another node.
+      All messages are end-to-end encrypted using RNS's built-in cryptography.
+    </p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 6. P2P Diagram -->
+  <section class="section" id="p2p">
+    <div class="section-label">06 — Topology</div>
+    <h2>Basic Point-to-Point Network</h2>
+    <p>
+      The simplest GhostNet deployment is two nodes — each with any interface type
+      in common. All traffic on the link is encrypted end-to-end.
+    </p>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">Point-to-Point · Two-Node Example</div>
+      <svg viewBox="0 0 680 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#2e5a7a"/>
+          </marker>
+          <marker id="arr2" markerWidth="8" markerHeight="6" refX="0" refY="3" orient="auto">
+            <polygon points="8 0, 0 3, 8 6" fill="#2e5a7a"/>
+          </marker>
+        </defs>
+
+        <!-- Node A -->
+        <rect x="40" y="50" width="140" height="80" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="110" y="80" text-anchor="middle"
+              font-size="9" fill="#8ab8d4" letter-spacing="1">STATION A</text>
+        <text x="110" y="98" text-anchor="middle"
+              font-size="8" fill="#4d7da0">LAN · TCP · RF</text>
+        <circle cx="110" cy="115" r="4" fill="#00c853"/>
+        <text x="120" y="119" font-size="7" fill="#4d7da0">online</text>
+
+        <!-- Node B -->
+        <rect x="500" y="50" width="140" height="80" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="570" y="80" text-anchor="middle"
+              font-size="9" fill="#8ab8d4" letter-spacing="1">STATION B</text>
+        <text x="570" y="98" text-anchor="middle"
+              font-size="8" fill="#4d7da0">LAN · TCP · RF</text>
+        <circle cx="570" cy="115" r="4" fill="#00c853"/>
+        <text x="580" y="119" font-size="7" fill="#4d7da0">online</text>
+
+        <!-- Encrypted link -->
+        <line x1="180" y1="90" x2="500" y2="90"
+              stroke="#2e5a7a" stroke-width="1.5" stroke-dasharray="6 4"
+              marker-end="url(#arr)" marker-start="url(#arr2)"/>
+        <rect x="270" y="74" width="140" height="20" rx="3"
+              fill="#070d14" stroke="none"/>
+        <text x="340" y="87" text-anchor="middle"
+              font-size="7.5" fill="#00d4ff" letter-spacing="0.5">end-to-end encrypted</text>
+        <text x="340" y="62" text-anchor="middle"
+              font-size="7" fill="#4d7da0">LAN / TCP / LoRa / HF-VHF-UHF packet</text>
+      </svg>
+    </div>
+
+    <p>
+      Any pair of stations with a shared interface type can communicate directly.
+      The link can be LAN, TCP over the internet, LoRa radio, or a soundcard packet
+      modem — the application layer is identical regardless of transport.
+    </p>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 7. Mesh Topology -->
+  <section class="section" id="mesh">
+    <div class="section-label">07 — Topology</div>
+    <h2>Robust Mesh Network Topology</h2>
+    <p>
+      For broader coverage, GhostNet nodes automatically route traffic across multiple
+      hops. Any node configured as a <strong>full router</strong> (multiple interfaces active)
+      bridges between transports — for example, relaying a message from a LoRa radio
+      node through TCP to a distant LAN segment.
+    </p>
+    <p>
+      A <strong>Propagation Node</strong> is optional but recommended for reliability.
+      It stores messages for nodes that are temporarily offline and delivers them
+      when they reconnect — functioning as an asynchronous store-and-forward relay.
+    </p>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">Mesh Network · Hub + Propagation Node</div>
+      <svg viewBox="0 0 720 380" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ma" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+            <polygon points="0 0, 7 2.5, 0 5" fill="#2e5a7a"/>
+          </marker>
+        </defs>
+
+        <!-- Hub (center) -->
+        <rect x="270" y="140" width="180" height="90" rx="6"
+              fill="#0a1520" stroke="#2e5a7a" stroke-width="2"/>
+        <text x="360" y="173" text-anchor="middle"
+              font-size="10" fill="#ffffff" font-weight="600" letter-spacing="1.5">HUB STATION</text>
+        <text x="360" y="191" text-anchor="middle"
+              font-size="8" fill="#8ab8d4">full router · always-on</text>
+        <circle cx="316" cy="208" r="4" fill="#00c853"/>
+        <text x="325" y="212" font-size="7" fill="#4d7da0">LAN</text>
+        <circle cx="360" cy="208" r="4" fill="#00d4ff"/>
+        <text x="369" y="212" font-size="7" fill="#4d7da0">TCP</text>
+        <circle cx="404" cy="208" r="4" fill="#ff8c00"/>
+        <text x="413" y="212" font-size="7" fill="#4d7da0">RF</text>
+
+        <!-- Prop node (top-right) -->
+        <rect x="548" y="28" width="148" height="72" rx="5"
+              fill="#0d1b2a" stroke="#003a4d" stroke-width="1.5"/>
+        <text x="622" y="55" text-anchor="middle"
+              font-size="8.5" fill="#00d4ff" letter-spacing="0.5">PROP NODE</text>
+        <text x="622" y="70" text-anchor="middle"
+              font-size="7" fill="#4d7da0">store &amp; forward</text>
+        <text x="622" y="84" text-anchor="middle"
+              font-size="7" fill="#4d7da0">offline delivery</text>
+
+        <!-- Field nodes -->
+        <!-- Top-left -->
+        <rect x="28" y="28" width="130" height="62" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="93" y="53" text-anchor="middle" font-size="8.5" fill="#8ab8d4">NODE A</text>
+        <text x="93" y="67" text-anchor="middle" font-size="7" fill="#4d7da0">LoRa · LAN</text>
+        <circle cx="93" cy="80" r="3.5" fill="#00c853"/>
+
+        <!-- Left -->
+        <rect x="8" y="168" width="130" height="62" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="73" y="193" text-anchor="middle" font-size="8.5" fill="#8ab8d4">NODE B</text>
+        <text x="73" y="207" text-anchor="middle" font-size="7" fill="#4d7da0">LAN</text>
+        <circle cx="73" cy="221" r="3.5" fill="#00c853"/>
+
+        <!-- Bottom-left -->
+        <rect x="28" y="295" width="130" height="62" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="93" y="320" text-anchor="middle" font-size="8.5" fill="#8ab8d4">NODE C</text>
+        <text x="93" y="334" text-anchor="middle" font-size="7" fill="#4d7da0">HF packet</text>
+        <circle cx="93" cy="347" r="3.5" fill="#ff8c00"/>
+        <text x="102" y="351" font-size="7" fill="#4d7da0">RF only</text>
+
+        <!-- Bottom-right -->
+        <rect x="560" y="295" width="130" height="62" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="625" y="320" text-anchor="middle" font-size="8.5" fill="#8ab8d4">NODE D</text>
+        <text x="625" y="334" text-anchor="middle" font-size="7" fill="#4d7da0">TCP · LoRa</text>
+        <circle cx="625" cy="347" r="3.5" fill="#00c853"/>
+
+        <!-- Right -->
+        <rect x="580" y="168" width="130" height="62" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="645" y="193" text-anchor="middle" font-size="8.5" fill="#8ab8d4">NODE E</text>
+        <text x="645" y="207" text-anchor="middle" font-size="7" fill="#4d7da0">TCP</text>
+        <circle cx="645" cy="221" r="3.5" fill="#00c853"/>
+
+        <!-- Links: hub to prop node -->
+        <line x1="450" y1="165" x2="548" y2="78" stroke="#2e5a7a" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#ma)"/>
+
+        <!-- Hub to nodes -->
+        <line x1="270" y1="172" x2="158" y2="72" stroke="#1e3a56" stroke-width="1" marker-end="url(#ma)"/>
+        <line x1="270" y1="185" x2="138" y2="199" stroke="#1e3a56" stroke-width="1" marker-end="url(#ma)"/>
+        <line x1="290" y1="230" x2="158" y2="318" stroke="#1e3a56" stroke-width="1" marker-end="url(#ma)"/>
+        <line x1="430" y1="230" x2="560" y2="318" stroke="#1e3a56" stroke-width="1" marker-end="url(#ma)"/>
+        <line x1="450" y1="185" x2="580" y2="199" stroke="#1e3a56" stroke-width="1" marker-end="url(#ma)"/>
+
+        <!-- Node to prop node (TCP) -->
+        <line x1="645" y1="168" x2="660" y2="100" stroke="#003a4d" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#ma)"/>
+
+        <!-- Legend -->
+        <line x1="28" y1="362" x2="58" y2="362" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="63" y="366" font-size="7" fill="#4d7da0">mesh link</text>
+        <line x1="120" y1="362" x2="150" y2="362" stroke="#2e5a7a" stroke-width="1" stroke-dasharray="5 3"/>
+        <text x="155" y="366" font-size="7" fill="#4d7da0">prop node link</text>
+        <circle cx="228" cy="362" r="3.5" fill="#ff8c00"/>
+        <text x="236" y="366" font-size="7" fill="#4d7da0">RF only (no internet)</text>
+        <circle cx="340" cy="362" r="3.5" fill="#00c853"/>
+        <text x="348" y="366" font-size="7" fill="#4d7da0">online</text>
+      </svg>
+    </div>
+
+    <ul>
+      <li>Nodes route across multiple hops automatically — no manual routing configuration</li>
+      <li>RF-only nodes (no TCP/LAN) can still participate fully via a hub that bridges to the wider mesh</li>
+      <li>The propagation node stores messages for offline members and delivers them on reconnect</li>
+      <li>A propagation node should run on an always-on machine — a desktop, mini-PC, or single-board computer works well</li>
+    </ul>
+  </section>
+
+  <hr class="divider">
+
+  <!-- 8. Group Chat -->
+  <section class="section" id="groups">
+    <div class="section-label">08 — Messaging</div>
+    <h2>Group Chat</h2>
+
+    <div class="note warn">
+      <span class="note-label">⚠ GhostNet Software Required</span>
+      The Group Chat feature requires <strong>all members to run GhostNet software</strong>.
+      Standard Reticulum RNS identities — nodes running plain RNS or other LXMF clients —
+      will not be able to participate in GhostNet group chats.
+    </div>
+
+    <p>
+      One member's computer functions as the <strong>group administrator</strong>. Their node
+      acts as the relay server — all messages flow through the admin's station and are distributed
+      to every other member. All other participants are members.
+    </p>
+    <p>
+      It is recommended that the admin station be a reliable, always-on machine.
+      Running a <strong>Propagation Node</strong> interface on the admin station gives
+      members the best chance of retrieving messages they missed while offline.
+    </p>
+
+    <h3>Setup Procedure</h3>
+    <ol class="steps">
+      <li>
+        <div class="step-body">
+          <strong>Identify members</strong> — go to the <strong>Network</strong> tab in
+          Contacts. Any GhostNet station that has been heard on the mesh will appear here.
+          Check the box next to each station you want to add to your Phone Book.
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Confirm they are in the Phone Book</strong> — members must be in your
+          Phone Book tab before they can be added to a group. If a station is not in your
+          Phone Book, or is not running GhostNet software, they cannot join a group chat.
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Create the group</strong> — in the <strong>Groups</strong> tab, create
+          a new group and add members from your Phone Book.
+        </div>
+      </li>
+      <li>
+        <div class="step-body">
+          <strong>Announce the group</strong> — after the group is created, click the
+          <strong>Admin</strong> button in the Groups tab and announce the group so members
+          receive the invitation and can join.
+        </div>
+      </li>
+    </ol>
+
+    <div class="note">
+      <span class="note-label">ℹ RF Stations &amp; Offline Messages</span>
+      RF-only stations (no TCP or LAN connection) will have difficulty retrieving offline
+      messages. Message retrieval requires an active link back to the relay or propagation
+      node, and the link negotiation process is more demanding than typical message delivery.
+      For reliable offline delivery, the admin station should run a Propagation Node and
+      have a TCP or LAN interface available.
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">Group Chat · Relay Distribution Model</div>
+      <svg viewBox="0 0 680 260" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ga" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+            <polygon points="0 0, 7 2.5, 0 5" fill="#2e5a7a"/>
+          </marker>
+        </defs>
+
+        <!-- Relay / Group owner -->
+        <rect x="255" y="90" width="170" height="80" rx="6"
+              fill="#0a1520" stroke="#00d4ff" stroke-width="1.5"/>
+        <text x="340" y="120" text-anchor="middle"
+              font-size="9" fill="#00d4ff" letter-spacing="1">GROUP RELAY</text>
+        <text x="340" y="136" text-anchor="middle"
+              font-size="7.5" fill="#8ab8d4">group owner's node</text>
+        <text x="340" y="152" text-anchor="middle"
+              font-size="7.5" fill="#4d7da0">distributes to all members</text>
+
+        <!-- Members -->
+        <rect x="28" y="30" width="115" height="55" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="86" y="55" text-anchor="middle" font-size="8.5" fill="#8ab8d4">MEMBER A</text>
+        <circle cx="86" cy="72" r="3.5" fill="#00c853"/>
+
+        <rect x="28" y="175" width="115" height="55" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="86" y="200" text-anchor="middle" font-size="8.5" fill="#8ab8d4">MEMBER B</text>
+        <circle cx="86" cy="217" r="3.5" fill="#00c853"/>
+
+        <rect x="537" y="30" width="115" height="55" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="595" y="55" text-anchor="middle" font-size="8.5" fill="#8ab8d4">MEMBER C</text>
+        <circle cx="595" cy="72" r="3.5" fill="#00c853"/>
+
+        <rect x="537" y="175" width="115" height="55" rx="5"
+              fill="#0d1b2a" stroke="#1e3a56" stroke-width="1.5"/>
+        <text x="595" y="200" text-anchor="middle" font-size="8.5" fill="#8ab8d4">MEMBER D</text>
+        <text x="595" y="215" text-anchor="middle" font-size="7" fill="#4d7da0">via prop node</text>
+        <circle cx="595" cy="228" r="3.5" fill="#ff8c00"/>
+        <text x="604" y="232" font-size="7" fill="#4d7da0">offline</text>
+
+        <!-- Links: members to relay -->
+        <line x1="143" y1="57" x2="255" y2="120" stroke="#1e3a56" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#ga)"/>
+        <line x1="143" y1="202" x2="255" y2="150" stroke="#1e3a56" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#ga)"/>
+        <line x1="537" y1="57" x2="425" y2="120" stroke="#1e3a56" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#ga)"/>
+        <line x1="537" y1="202" x2="425" y2="150" stroke="#2e5a7a" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#ga)"/>
+
+        <!-- Offline delivery note -->
+        <text x="490" y="225" text-anchor="middle" font-size="7" fill="#2e5a7a">via propagation node</text>
+        <text x="490" y="236" text-anchor="middle" font-size="7" fill="#2e5a7a">when relay is reachable</text>
+
+        <!-- "Send" label on member A arrow -->
+        <text x="183" y="80" text-anchor="middle" font-size="7" fill="#4d7da0">send</text>
+        <!-- "Relay out" labels -->
+        <text x="490" y="75" text-anchor="middle" font-size="7" fill="#4d7da0">distribute</text>
+        <text x="183" y="200" text-anchor="middle" font-size="7" fill="#4d7da0">distribute</text>
+      </svg>
+    </div>
+
+    <ul>
+      <li>Any member can send to the group — their message is delivered to the relay first</li>
+      <li>The relay distributes to all active members in real time</li>
+      <li>Members who are offline receive queued messages via the propagation node when they reconnect</li>
+      <li>The relay node does not need to be a dedicated machine — any member's node can serve as relay</li>
+    </ul>
+
+    <div class="note warn">
+      <span class="note-label">⚠ Relay Availability</span>
+      If the relay node goes offline, real-time group delivery is interrupted.
+      For critical comms groups, run the relay on an always-on machine or pair it
+      with a propagation node for store-and-forward resilience.
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="doc-footer">
+    <span>MERIDIAN GHOSTNET · v1.3.3</span>
+    <span>RNS + LXMF · Reticulum Network Stack</span>
+    <span>Free &amp; Open Source</span>
+  </footer>
+
+</div>
+</body>
+</html>
