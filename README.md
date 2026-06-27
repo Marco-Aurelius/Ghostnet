@@ -5,3 +5,5 @@ UI that manages:
   RNS Group Chat
   RNS Propogation Nodes
   RNS over TCP, VHF, UHF, HF & RNode (LoRa Radio). Tested using DigiRig Mobile, DigiRig Lite, Yaesu SCU-17 and multiple radios.
+
+Releases contain deb and tarball
