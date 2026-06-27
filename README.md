@@ -1,6 +1,7 @@
 # Ghostnet
 Reticulum Based Messenger inspired by S2Underground
-UI that manages:
+
+This software serves a UI that manages:
   RNS direct messaging
   RNS Group Chat
   RNS Propogation Nodes
