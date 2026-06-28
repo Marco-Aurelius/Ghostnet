@@ -5,4 +5,4 @@ This project is an Ubuntu/Debian based instance that serves a UI for managing RN
 
 This was tested using the DigiRig Lite, DigiRig Mobile and Yaesu SCU-17 radio modems as well as various radios and TCP network configurations.
 
-Releases contain the deb and tarball for online and offline installation.
+Releases/tags contain the deb and tarball for online and offline installation.
